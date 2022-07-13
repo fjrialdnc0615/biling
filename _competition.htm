@@ -1,0 +1,254 @@
+﻿<html>
+
+<head>
+<meta http-equiv="Content-Language" content="zh-tw">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>日語學習成果展示平台</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="json2.js"></script>
+<style>
+BODY {
+SCROLLBAR-HIGHLIGHT-COLOR: #fcfcfc;
+ SCROLLBAR-TRACK-COLOR: #fcfcfc;
+ SCROLLBAR-FACE-COLOR: #fcfcfc;
+ SCROLLBAR-3DLIGHT-COLOR: #fcfcfc;
+ SCROLLBAR-BASE-COLOR: #fcfcfc;
+ SCROLLBAR-ARROW-COLOR: #fc4890;
+ SCROLLBAR-SHADOW-COLOR: #fcfcfc;
+ SCROLLBAR-DARKSHADOW-COLOR: #fcfcfc;
+}
+.style1 {
+	font-family: "微軟正黑體";
+	font-size: 16px;
+}
+.style2 {color: #AA5555}
+.style3 {color: #000000}
+body{
+	background:url('colors_and_flower_pattern_in_japanese_style_WA01_013L.jpg') no-repeat fixed center top;
+	background-size: 100%;
+}
+a{text-decoration:none;}
+#apdiv{
+	opacity:0;
+	filter:alpha(opacity=0); 
+}
+</style>
+<script type="text/javascript">
+$.ajaxSetup ({cache: false});
+var afa=0;
+var itv=null;
+var data;
+var tmpdata=[];
+function inc(){
+	afa+=0.01;
+	if(afa>=1){
+		afa=1;
+		clearInterval(itv);
+	}
+	document.getElementById("apdiv").style.filter="alpha(opacity="+afa*100+")";
+	document.getElementById("apdiv").style.opacity = afa;
+}
+function dec(){
+	afa-=0.01;
+	if(afa<=0){
+		afa=0;
+		clearInterval(itv);
+	}
+	document.getElementById("apdiv").style.filter="alpha(opacity="+afa*100+")";
+	document.getElementById("apdiv").style.opacity = afa;
+}
+function hide(){
+	if(itv!=null)clearInterval(itv);
+	itv=setInterval(dec,10);
+}
+function show(){
+	if(itv!=null)clearInterval(itv);
+	itv=setInterval(inc,10);
+}
+function load(){
+	$.ajax({url:"competition.json",dataType: "json",success:function(result){
+		data=jQuery.extend({}, result);
+		for(var i=0;i<data.comp.length;i++)tmpdata.push({persons:[],text:""});
+		update();
+	}});
+}
+$(function(){
+	load();
+});
+function update(){
+	var str="";
+	str=str.concat("<p><button type=\"button\" onclick=\"newtime()\">新增日期</button><input type=\"text\" name=\"newt\"></p>");
+	for(var i=0;i<data.comp.length;i++){
+		var obj=data.comp[i];
+		str=str.concat("<p><img border=\"0\" src=\"li0p.gif\" width=\"300\" height=\"30\"></p><p><input type=\"text\" name=\"time",i,"\" onchange=\"formchange(this)\" value=\"",obj.time,"\"><button type=\"button\" onclick=\"deletetime(this)\" value=\"",i,"\">刪除</button></p>");
+		str=str.concat("<p><input type=\"text\" name=\"ndep",i,"\"><input type=\"text\" name=\"nname",i,"\"><input type=\"text\" name=\"nnote",i,"\"><button type=\"button\" onclick=\"newperson(this)\" value=\"",i,"\">新增獲獎人</button><br>");
+		for(var j=0;j<tmpdata[i].persons.length;j++)str=str.concat("<input type=\"text\" name=\"ndep",i,",",j,"\" value=\"",tmpdata[i].persons[j].dep,"\"><input type=\"text\" name=\"nname",i,",",j,"\" value=\"",tmpdata[i].persons[j].name,"\"><input type=\"text\" name=\"nnote",i,",",j,"\" value=\"",tmpdata[i].persons[j].note,"\"><button type=\"button\" onclick=\"deleteperson(this)\" value=\"",i,",",j,"\">刪除</button><br>");
+		str=str.concat("<textarea rows=\"3\" cols=\"50\" id=\"ntext",i,"\">",tmpdata[i].text,"</textarea><button type=\"button\" onclick=\"newcomp(this)\" value=\"",i,"\">新增</button></p>");
+		
+		for(var j=0;j<obj.comp.length;j++){
+			var comp=obj.comp[j];
+			str=str.concat("<p><img border=\"0\" src=\"nameicon_64042.gif\" width=\"15\" height=\"15\"><input type=\"text\" name=\"ndep",i,"_",j,"\"><input type=\"text\" name=\"nname",i,"_",j,"\"><input type=\"text\" name=\"nnote",i,"_",j,"\"><button type=\"button\" onclick=\"newperson(this)\">新增獲獎人</button><br>");
+			for(var k=0;k<comp.persons.length;k++){
+				var person=comp.persons[k];
+				str=str.concat("<input type=\"text\" name=\"dep",i,"_",j,"_",k,"\" onchange=\"formchange(this)\" value=\"",person.dep,"\"><input type=\"text\" name=\"name",i,"_",j,"_",k,"\" onchange=\"formchange(this)\" value=\"",person.name,"\"><input type=\"text\" name=\"note",i,"_",j,"_",k,"\" onchange=\"formchange(this)\" value=\"",person.note,"\"><button type=\"button\" onclick=\"deleteperson(this)\" value=\"",i,",",j,",",k,"\">刪除</button><br>");
+			}
+			str=str.concat("<textarea rows=\"3\" cols=\"50\" id=\"text",i,"_",j,"\" name=\"text",i,"_",j,"\" onchange=\"formchange(this)\">",comp.text,"</textarea><button type=\"button\" onclick=\"deletecomp(this)\" value=\"",i,",",j,"\">刪除</button></p>");
+		}
+	}
+	$("#comp").html(str);
+}
+function newtime(){
+	var t=document.forms["jpform"]["newt"].value;
+	document.forms["jpform"]["newt"].value="";
+	if(t.length==0)return;
+	data.comp.splice(0,0,{time:t,comp:[]});
+	tmpdata.splice(0,0,{persons:[],text:""});
+	update();
+}
+function deletetime(btn){
+	data.comp.splice(parseInt(btn.value),1);
+	tmpdata.splice(parseInt(btn.value),1);
+	update();
+}
+function newperson(btn){
+	if(btn.value.search(",")<0){
+		var i=parseInt(btn.value);
+		var d=document.forms["jpform"]["ndep".concat(i)].value;
+		var na=document.forms["jpform"]["nname".concat(i)].value;
+		var no=document.forms["jpform"]["nnote".concat(i)].value;
+		document.forms["jpform"]["ndep".concat(i)].value="";
+		document.forms["jpform"]["nname".concat(i)].value="";
+		document.forms["jpform"]["nnote".concat(i)].value="";
+		if(na.length==0)return;
+		tmpdata[i].persons.push({dep:d,name:na,note:no});
+		tmpdata[i].text=$("#ntext".concat(i)).val();
+	}
+	else{
+		var i=parseInt(btn.value.split(",")[0]);
+		var j=parseInt(btn.value.split(",")[1]);
+		var d=document.forms["jpform"]["ndep".concat(i,"_",j)].value;
+		var na=document.forms["jpform"]["nname".concat(i,"_",j)].value;
+		var no=document.forms["jpform"]["nnote".concat(i,"_",j)].value;
+		document.forms["jpform"]["ndep".concat(i,"_",j)].value="";
+		document.forms["jpform"]["nname".concat(i,"_",j)].value="";
+		document.forms["jpform"]["nnote".concat(i,"_",j)].value="";
+		if(na.length==0)return;
+		data.comp[i].comp[j].persons.push({dep:d,name:na,note:no});
+	}
+	update();
+}
+function deleteperson(btn){
+	var i=parseInt(btn.value.split(",")[0]);
+	var j=parseInt(btn.value.split(",")[1]);
+	if(btn.value.split(",").length==2){
+		tmpdata[i].persons.splice(j,1);
+	}
+	else{
+		var k=parseInt(btn.value.split(",")[2]);
+		data.comp[i].comp[j].persons.splice(k,1);
+	}
+	update();
+}
+function newcomp(btn){
+	var i=parseInt(btn.value);
+	tmpdata[i].text=$("#ntext".concat(i)).val();
+	data.comp[i].comp.splice(0,0,tmpdata[i]);
+	$("#ntext".concat(i)).val("");
+	tmpdata[i]={persons:[],text:""};
+	update();
+}
+function deletecomp(btn){
+	var i=parseInt(btn.value.split(",")[0]);
+	var j=parseInt(btn.value.split(",")[1]);
+	data.comp[i].comp.splice(j,1);
+	update();
+}
+function formchange(inp){
+	if(inp.name.startsWith("time")){
+		var i=parseInt(inp.name.substr(4));
+		data.comp[i].time=document.forms["jpform"][inp.name].value;
+	}
+	else if(inp.name.startsWith("text")){
+		var i=parseInt(inp.name.substr(4).split("_")[0]);
+		var j=parseInt(inp.name.substr(4).split("_")[1]);
+		data.comp[i].comp[j].text=$("#text".concat(i,"_",j)).val();
+	}
+	else if(inp.name.startsWith("dep")){
+		var i=parseInt(inp.name.substr(3).split("_")[0]);
+		var j=parseInt(inp.name.substr(3).split("_")[1]);
+		var k=parseInt(inp.name.substr(3).split("_")[2]);
+		data.comp[i].comp[j].persons[k].dep=document.forms["jpform"][inp.name].value;
+	}
+	else if(inp.name.startsWith("name")){
+		var i=parseInt(inp.name.substr(4).split("_")[0]);
+		var j=parseInt(inp.name.substr(4).split("_")[1]);
+		var k=parseInt(inp.name.substr(4).split("_")[2]);
+		data.comp[i].comp[j].persons[k].name=document.forms["jpform"][inp.name].value;
+	}
+	else if(inp.name.startsWith("note")){
+		var i=parseInt(inp.name.substr(4).split("_")[0]);
+		var j=parseInt(inp.name.substr(4).split("_")[1]);
+		var k=parseInt(inp.name.substr(4).split("_")[2]);
+		data.comp[i].comp[j].persons[k].note=document.forms["jpform"][inp.name].value;
+	}
+}
+function save(){
+	var str=JSON.stringify(data);
+
+	/*var xobj=CreateObject("Scripting.FileSystemObject");
+	var file=xobj.CreateTextFile("C:\\000\\work.json", True);
+	file.writeline(str);*/
+
+	var file=new Blob([str], {type: 'text/plain'});
+	var link = document.getElementById('downloadlink');
+    	link.href = window.URL.createObjectURL(file);
+    	link.style.display = 'inline';
+	//$.post("data.php",{filename:"scholarship.json",data:str},function(){load();});
+}
+</script>
+
+</head>
+<body>
+
+<div style="margin: 0px auto; width:80%; background-color:rgba(255,255,255,0.825);">
+<div style="width:100%">
+<table width="100%" border="0" align="center" id="topbar">
+<tr>
+<td colspan="7"><img src="top.jpg" width=100%></td>
+</tr>
+<tr>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=10%><p><font face="微軟正黑體"><b><a href="right.htm"><font color="#0000FF">回首頁</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="competition.htm"><font color="#0000FF">日語競賽榮譽榜</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="scholarship.htm"><font color="#0000FF">日語能力檢測<br>獎勵金榜單</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="apply.htm"><font color="#0000FF">日語能力檢測獎勵</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="work.htm"><font color="#0000FF">日語學習成果<br>展示平台</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="source.htm"><font color="#0000FF">日語學習資源</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=10% id="otherlink">
+<font face="微軟正黑體"><b><font color="#0000FF"><a onMouseOver="show();" onMouseOut="hide();">外部連結</a></font></b></font></td>
+</tr>
+</table>
+<div style="background-color:#F0F0FF;float:right;width:10%;z-index:1;" id="apdiv" onMouseOver="show();" onMouseOut="hide();">
+<table border="1" bordercolor="white" width="100%">
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://web.nchu.edu.tw/pweb/index2.php?pid=396&menu=2"><font color="#0000FF">資訊網頁</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.lttc.ntu.edu.tw/JLPT.htm"><font color="#0000FF">日本語能力試驗</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.koryu.or.jp/taipei-tw/ez3_contents.nsf/Top"><font color="#0000FF">日本交流協會</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.lttc.ntu.edu.tw/EJU.htm"><font color="#0000FF">日本留學試驗</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.n-lab.org/library/mondai/index.html"><font color="#0000FF">JLPT 問題検索室</font></a></b></font></p></td></tr>
+</table>
+</div>
+</div>
+<div style="width:100%; background:url('cup-620897_640.png') no-repeat right top; background-size: 20% auto">
+<div style="width:80%;margin-left:10%;">
+
+<p>&nbsp;<b><font face="微軟正黑體" size="6"><font color="#FF6666">日</font><font color="#CC0000">語</font><font color="#FF3300">競</font><font color="#FF9900">賽</font><font color="#CC9900">榮</font><font color="#669900">譽</font><font color="#339966">榜 </font></font></b></p>
+<form id="jpform" name="jpform">
+<button type="button" onclick="save()">儲存</button><a download="competition.json" id="downloadlink" style="display: none">下載</a>
+<div id="comp"></div>
+</form>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#"><font color="#0080FF">Top</font></a>
+<br><br><br><br><br>
+</div>
+</div>
+</div>
+<body>
+</html>

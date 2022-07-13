@@ -1,0 +1,137 @@
+﻿<html>
+
+<head>
+<meta http-equiv="Content-Language" content="zh-tw">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>日語學習成果展示平台</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="json2.js"></script>
+<STYLE>
+BODY {
+SCROLLBAR-HIGHLIGHT-COLOR: #fcfcfc;
+ SCROLLBAR-TRACK-COLOR: #fcfcfc;
+ SCROLLBAR-FACE-COLOR: #fcfcfc;
+ SCROLLBAR-3DLIGHT-COLOR: #fcfcfc;
+ SCROLLBAR-BASE-COLOR: #fcfcfc;
+ SCROLLBAR-ARROW-COLOR: #fc4890;
+ SCROLLBAR-SHADOW-COLOR: #fcfcfc;
+ SCROLLBAR-DARKSHADOW-COLOR: #fcfcfc
+}
+</STYLE>
+<style>
+body{
+	background:url('colors_and_flower_pattern_in_japanese_style_WA01_013L.jpg') no-repeat fixed center top;
+	background-size: 100%;
+}
+a{text-decoration:none;}
+#apdiv{
+	opacity:0;
+	filter:alpha(opacity=0); 
+}
+</style>
+<script type="text/javascript">
+$.ajaxSetup ({cache: false});
+var afa=0;
+var itv=null;
+var data;
+function inc(){
+	afa+=0.01;
+	if(afa>=1){
+		afa=1;
+		clearInterval(itv);
+	}
+	document.getElementById("apdiv").style.filter="alpha(opacity="+afa*100+")";
+	document.getElementById("apdiv").style.opacity = afa;
+}
+function dec(){
+	afa-=0.01;
+	if(afa<=0){
+		afa=0;
+		clearInterval(itv);
+	}
+	document.getElementById("apdiv").style.filter="alpha(opacity="+afa*100+")";
+	document.getElementById("apdiv").style.opacity = afa;
+}
+function hide(){
+	if(itv!=null)clearInterval(itv);
+	itv=setInterval(dec,10);
+}
+function show(){
+	if(itv!=null)clearInterval(itv);
+	itv=setInterval(inc,10);
+}
+$(function(){
+	$.ajax({url:"scholarship.json",dataType: "json",success:function(result){
+		data=jQuery.extend({}, result);
+		update();
+	}});
+});
+function update(){
+	var str="";
+	for(var i=0;i<data.jlpt.length;i++){
+		var obj=data.jlpt[i];
+		str=str.concat("<p><img border=\"0\" src=\"li0p.gif\" width=\"300\" height=\"30\"></p><p><strong><font face=\"微軟正黑體\" color=\"#CC0066\">",obj.time,"　領獎者</font></strong></p>");
+		for(var j=0;j<data.jlpt[i].n1.length;j++){
+			str=str.concat("<p><font face=\"微軟正黑體\">");
+			if(j==0)str=str.concat("<font color=\"#FFFFFF\"><span style=\"background-color: #C04545\">Ｎ１</span></font>　");
+			else str=str.concat("　　　");
+			str=str.concat(data.jlpt[i].n1[j],"</font></p>");
+		}
+		for(var j=0;j<data.jlpt[i].n2.length;j++){
+			str=str.concat("<p><font face=\"微軟正黑體\">");
+			if(j==0)str=str.concat("<font color=\"#FFFFFF\"><span style=\"background-color: #C04545\">Ｎ２</span></font>　");
+			else str=str.concat("　　　");
+			str=str.concat(data.jlpt[i].n2[j],"</font></p>");
+		}
+	}
+	$("#jlpt").html(str);
+}
+</script>
+
+</head>
+
+<body>
+<div style="margin: 0px auto; width:80%; background-color:rgba(255,255,255,0.825);">
+<div style="width:100%">
+<table width="100%" border="0" align="center" id="topbar">
+<tr>
+<td colspan="7"><img src="top.jpg" width=100%></td>
+</tr>
+<tr>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=10%><p><font face="微軟正黑體"><b><a href="right.htm"><font color="#0000FF">回首頁</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="competition.htm"><font color="#0000FF">日語競賽榮譽榜</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="scholarship.htm"><font color="#0000FF">日語能力檢測<br>獎勵金榜單</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="apply.htm"><font color="#0000FF">日語能力檢測獎勵</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="work.htm"><font color="#0000FF">日語學習成果<br>展示平台</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="source.htm"><font color="#0000FF">日語學習資源</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=10% id="otherlink">
+<font face="微軟正黑體"><b><font color="#0000FF"><a onMouseOver="show();" onMouseOut="hide();">外部連結</a></font></b></font></td>
+</tr>
+</table>
+<div style="background-color:#F0F0FF;float:right;width:10%;z-index:1;" id="apdiv" onMouseOver="show();" onMouseOut="hide();">
+<table border="1" bordercolor="white" width="100%">
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://web.nchu.edu.tw/pweb/index2.php?pid=396&menu=2"><font color="#0000FF">資訊網頁</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.lttc.ntu.edu.tw/JLPT.htm"><font color="#0000FF">日本語能力試驗</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.koryu.or.jp/taipei-tw/ez3_contents.nsf/Top"><font color="#0000FF">日本交流協會</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.lttc.ntu.edu.tw/EJU.htm"><font color="#0000FF">日本留學試驗</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.n-lab.org/library/mondai/index.html"><font color="#0000FF">JLPT 問題検索室</font></a></b></font></p></td></tr>
+</table>
+</div>
+</div>
+<div style="width:100%; background:url('cup-620897_640.png') no-repeat right top;">
+<div style="width:80%;margin-left:10%;">
+<p><font color="#CC0066">&nbsp;</font><b><font face="微軟正黑體" size="6" color="#CC0066">日語能力檢測</font><font face="微軟正黑體" size="6" color="#F20079">獎</font><font face="微軟正黑體" size="6" color="#FF5050">勵</font><font face="微軟正黑體" size="6" color="#FF6666">金</font><font face="微軟正黑體" size="6" color="#FFC142">榜</font><font face="微軟正黑體" size="6" color="#CC9900">單</font></b></p>
+<p><b><font face="微軟正黑體">通過N1者獎勵金1500元；N2者獎勵金1000元</font></b></p>
+<p><b><font face="微軟正黑體">申請辦法詳見【<a href="apply.htm">日語能力檢測獎勵</a>】</font></b></p>
+<div id="jlpt"></div>
+<p>　</p>
+<p>　</p>
+<p>　</p>
+
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#"><font color="#0080FF">Top</font></a>
+<br><br><br><br><br>
+</div>
+</div>
+</div>
+</body>
+</html>

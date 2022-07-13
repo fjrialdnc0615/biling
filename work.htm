@@ -1,0 +1,306 @@
+﻿<html>
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>日語學習成果展示平台</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="json2.js"></script>
+<style>
+a{ color:#0000ff;text-decoration:none; }/*連結格式*/
+a:visited{ color:#CC0000; } /*案過的連結文字格式*/ 
+a:active{ color:#dddddd; } /*按下連結的格式*/ 
+a:hover{
+	color: #996600;
+	text-decoration: none;
+}/*滑鼠經過*/
+#d1>div>p,#d1>div>p>a{
+	font-family: 微軟正黑體;
+	color: #CC0000;
+	font-weight:bold;
+	text-decoration: none;
+}
+#d2>div>p,#d2>div>p>a{
+	font-family: 微軟正黑體;
+	color: #003399;
+	font-weight:bold;
+	text-decoration: none;
+}
+#d3>div>p,#d3>div>p>a{
+	font-family: 微軟正黑體;
+	color: #996633;
+	font-weight:bold;
+	text-decoration: none;
+}
+#d6>div>p,#d6>div>p>a{
+	font-family: 微軟正黑體;
+	color: #FF00FF;
+	font-weight:bold;
+	text-decoration: none;
+}
+.style4{
+	font-family: 微軟正黑體;
+	color: #006600;
+	text-decoration: none;
+	line-height: 150%;
+}
+.style5{
+	font-family: 微軟正黑體;
+	color: #006666;
+	text-decoration: none;
+	line-height: 150%;
+}
+body{
+	background:url('colors_and_flower_pattern_in_japanese_style_WA01_013L.jpg') no-repeat fixed center top;
+	background-size: 100%;
+}
+#apdiv{
+	opacity:0;
+	filter:alpha(opacity=0); 
+}
+</style>
+<script type="text/javascript">
+$.ajaxSetup ({cache: false});
+var afa=0;
+var itv=null;
+var data;
+function inc(){
+	afa+=0.01;
+	if(afa>=1){
+		afa=1;
+		clearInterval(itv);
+	}
+	document.getElementById("apdiv").style.filter="alpha(opacity="+afa*100+")";
+	document.getElementById("apdiv").style.opacity = afa;
+}
+function dec(){
+	afa-=0.01;
+	if(afa<=0){
+		afa=0;
+		clearInterval(itv);
+	}
+	document.getElementById("apdiv").style.filter="alpha(opacity="+afa*100+")";
+	document.getElementById("apdiv").style.opacity = afa;
+}
+function hide(){
+	if(itv!=null)clearInterval(itv);
+	itv=setInterval(dec,10);
+}
+function show(){
+	if(itv!=null)clearInterval(itv);
+	itv=setInterval(inc,10);
+}
+$(function(){
+	$.ajax({url:"work.json",dataType: "json",success:function(result){
+		data=jQuery.extend({}, result);
+		update();
+	}});
+});
+function update(){
+	var str="";
+	for(var i=0;i<data.j1.length;i++){
+		var obj=data.j1[i];
+		str=str.concat("<p>＊");
+		if(obj.new>0)str=str.concat("<img src=\"new_007.gif\" width=\"23\" height=\"13\">");
+		str=str.concat("<a target=\"_blank\" href=\"",obj.href,"\">",obj.title,"－",obj.author,"</a></p>");
+	}
+	$("#j1").html(str);
+	str="";
+	for(var i=0;i<data.j2.length;i++){
+		var obj=data.j2[i];
+		str=str.concat("<p>＊");
+		if(obj.new>0)str=str.concat("<img src=\"new_008.gif\" width=\"23\" height=\"13\">");
+		str=str.concat("<a target=\"_blank\" href=\"",obj.href,"\">",obj.title,"－",obj.author,"</a></p>");
+	}
+	$("#j2").html(str);
+	str="";
+	for(var i=0;i<data.j3.length;i++){
+		var obj=data.j3[i];
+		str=str.concat("<p>＊");
+		if(obj.new>0)str=str.concat("<img src=\"new_006.gif\" width=\"23\" height=\"13\">");
+		str=str.concat("<a target=\"_blank\" href=\"",obj.href,"\">",obj.title,"－",obj.author,"</a></p>");
+	}
+	$("#j3").html(str);
+	str="";
+	for(var i=0;i<data.js.length;i++){
+		var obj=data.js[i];
+		if(i%2==0)str=str.concat("<tr>");
+		if(i==0)str=str.concat("<td width=\"50%\">");
+		else str=str.concat("<td>");
+		str=str.concat("<a target=\"_blank\" href=\"",obj.href,"\" class=\"style4\">* ");
+		if(obj.new>0)str=str.concat("<img src=\"new_007.gif\" width=\"23\" height=\"13\">");
+		str=str.concat(obj.title,"</a></td>");
+		if(i%2==1||i==data.js.length-1)str=str.concat("</tr>");
+	}
+	$("#js").html(str);
+	str="";
+	for(var i=0;i<data.sp.length;i++){
+		var obj=data.sp[i];
+		if(i%2==0)str=str.concat("<tr>");
+		if(i==0)str=str.concat("<td width=\"50%\">");
+		else str=str.concat("<td>");
+		str=str.concat("<a target=\"_blank\" href=\"",obj.href,"\" class=\"style5\"> ",i+1,".");
+		if(obj.new>0)str=str.concat("<img src=\"new_007.gif\" width=\"23\" height=\"13\">");
+		str=str.concat(obj.title,"</a></td>");
+		if(i%2==1||i==data.js.length-1)str=str.concat("</tr>");
+	}
+	$("#sp").html(str);
+	str="";
+	for(var i=0;i<data.kara.length;i++){
+		var obj=data.kara[i];
+		str=str.concat("<p>＊");
+		if(obj.new>0)str=str.concat("<img src=\"new_007.gif\" width=\"23\" height=\"13\">");
+		str=str.concat("<a target=\"_blank\" href=\"",obj.href,"\">",obj.title,"－",obj.author,"</a></p>");
+	}
+	$("#kara").html(str);
+}
+</script>
+
+
+</head>
+
+
+
+<body>
+
+<div style="margin: 0px auto; width:80%; background-color:rgba(255,255,255,0.825);">
+<div style="width:100%">
+<table width="100%" border="0" align="center" id="topbar">
+<tr>
+<td colspan="7"><img src="top.jpg" width=100%></td>
+</tr>
+<tr>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=10%><p><font face="微軟正黑體"><b><a href="right.htm"><font color="#0000FF">回首頁</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="competition.htm"><font color="#0000FF">日語競賽榮譽榜</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="scholarship.htm"><font color="#0000FF">日語能力檢測<br>獎勵金榜單</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="apply.htm"><font color="#0000FF">日語能力檢測獎勵</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="work.htm"><font color="#0000FF">日語學習成果<br>展示平台</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=16%><p><font face="微軟正黑體"><b><a href="source.htm"><font color="#0000FF">日語學習資源</font></a></b></font></p></td>
+<td align="center" valign="middle" bgcolor="#F0F0FF" width=10% id="otherlink">
+<font face="微軟正黑體"><b><font color="#0000FF"><a onMouseOver="show();" onMouseOut="hide();">外部連結</a></font></b></font></td>
+</tr>
+</table>
+<div style="background-color:#F0F0FF;float:right;width:10%;z-index:1;" id="apdiv" onMouseOver="show();" onMouseOut="hide();">
+<table border="1" bordercolor="white" width="100%">
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://web.nchu.edu.tw/pweb/index2.php?pid=396&menu=2"><font color="#0000FF">資訊網頁</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.lttc.ntu.edu.tw/JLPT.htm"><font color="#0000FF">日本語能力試驗</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.koryu.or.jp/taipei-tw/ez3_contents.nsf/Top"><font color="#0000FF">日本交流協會</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.lttc.ntu.edu.tw/EJU.htm"><font color="#0000FF">日本留學試驗</font></a></b></font></p></td></tr>
+<tr><td><p><font face="微軟正黑體"><b><a target="_blank" href="http://www.n-lab.org/library/mondai/index.html"><font color="#0000FF">JLPT 問題検索室</font></a></b></font></p></td></tr>
+</table>
+</div>
+</div>
+<div style="width:100%; background:url('139028056_8631473388_o.gif') no-repeat right top;">
+<div style="width:80%;margin-left:10%;">
+
+<p><b><font face="微軟正黑體" size="6" color="#FF7575">日</font><span style="background-color: #FFFFFF"><font face="微軟正黑體" size="6" color="#FFAA55">語</font></span><font face="微軟正黑體" size="6" color="#C58A50">學</font><font face="微軟正黑體" size="6" color="#ADAD5C">習</font><font face="微軟正黑體" size="6" color="#80BD00">成</font><font face="微軟正黑體" size="6" color="#78D178">果</font><font face="微軟正黑體" size="6" color="#00B5B5">展</font><font face="微軟正黑體" size="6" color="#77C4FD">示</font><font face="微軟正黑體" size="6" color="#9999FF">平</font><font face="微軟正黑體" size="6" color="#9900FF">台</font></b></p>
+
+<p><b><font size="2" face="微軟正黑體" color="#800000">由於學習的時數平均為100~300小時之間，影片中若有發音、文法、字幕等錯誤，請多包涵。</font></b></p>
+
+<a name="1">
+<div id="d1" style="width:100%">
+<p><br>
+<font color="#0080FF" face="微軟正黑體">★</font><font color="#000000">日文一</font>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#2"><font color="#0080FF">日文二</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#3"><font color="#0080FF">日文三(中高級日文)</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#4"><font color="#0080FF">日語研習班</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#5"><font color="#0080FF">日語演講稿</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#6"><font color="#0080FF">日語卡拉OK大賽</font></a><br>
+</p>
+<p>
+	<font face="微軟正黑體" color="#FFFFFF" size="4"><span style="background-color: #FF7575">&nbsp; [日文一] &nbsp;</span></font></p>
+	<div id="j1"></div>
+</div>
+
+
+
+<a name="2">
+<div id="d2" style="width:100%">
+<p><br>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#1"><font color="#0080FF">日文一</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><font color="#000000">日文二</font>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#3"><font color="#0080FF">日文三(中高級日文)</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#4"><font color="#0080FF">日語研習班</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#5"><font color="#0080FF">日語演講稿</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#6"><font color="#0080FF">日語卡拉OK大賽</font></a><br>
+</p>
+<p>
+	<font face="微軟正黑體" color="#FFFFFF" size="4"><span style="background-color: #00B5B5">&nbsp; [日文二] &nbsp;</span></font></p>
+	<div id="j2"></div>
+</div>
+
+
+
+<a name="3">
+<div id="d3" style="width:100%">
+<p><br>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#1"><font color="#0080FF">日文一</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#2"><font color="#0080FF">日文二</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><font color="#000000">日文三(中高級日文)</font>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#4"><font color="#0080FF">日語研習班</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#5"><font color="#0080FF">日語演講稿</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#6"><font color="#0080FF">日語卡拉OK大賽</font></a><br>
+</p>
+<p>
+	<font face="微軟正黑體" color="#FFFFFF" size="4"><span style="background-color: #FF9900">&nbsp; [日文三(中高級日文)] &nbsp;</span></font></p>
+	<div id="j3"></div>
+</div>
+
+
+
+<a name="4">
+<div id="d4" style="width:100%">
+<p><br>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#1"><font color="#0080FF">日文一</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#2"><font color="#0080FF">日文二</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#3"><font color="#0080FF">日文三(中高級日文)</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><font color="#000000">日語研習班</font>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#5"><font color="#0080FF">日語演講稿</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#6"><font color="#0080FF">日語卡拉OK大賽</font></a><br>
+</p>
+<p>
+	<font face="微軟正黑體" color="#FFFFFF" size="4"><span style="background-color: #669900">&nbsp; [ 日語研習班 ] &nbsp;</span></font>
+</p>
+<table border="0" width="100%" id="js"></table>
+</div>
+
+
+
+<a name="5">
+<div id="d5" style="width:100%">
+<p><br>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#1"><font color="#0080FF">日文一</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#2"><font color="#0080FF">日文二</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#3"><font color="#0080FF">日文三(中高級日文)</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#4"><font color="#0080FF">日語研習班</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><font color="#000000">日語演講稿</font>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#6"><font color="#0080FF">日語卡拉OK大賽</font></a><br>
+</p>
+	<p>
+	<font face="微軟正黑體" color="#FFFFFF" size="4"><span style="background-color: #009999">&nbsp; [ 日語演講稿 ] &nbsp;</span></font>
+	</p>
+
+<table border="0" width="100%" id="sp"></table>
+</div>
+
+<br>
+<a name="6">
+<div id="d6" style="width:100%">
+<p><br>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#1"><font color="#0080FF">日文一</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#2"><font color="#0080FF">日文二</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#3"><font color="#0080FF">日文三(中高級日文)</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#4"><font color="#0080FF">日語研習班</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#5"><font color="#0080FF">日語演講稿</font></a>
+<font color="#0080FF" face="微軟正黑體">★</font><font color="#000000">日語卡拉OK大賽</font></p>
+<font face="微軟正黑體" color="#FFFFFF" size="4"><span style="background-color: #FF44FF">&nbsp; [日語卡拉OK大賽] &nbsp;</span></font>
+<div id="kara"></div>
+<br>
+<font color="#0080FF" face="微軟正黑體">★</font><a href="#"><font color="#0080FF">Top</font></a>
+<br><br><br><br><br>
+</div>
+</div>
+</div>
+</body>
+
+</html>
